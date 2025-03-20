@@ -1,0 +1,56 @@
+#Create a volume
+ 
+docker volume create my-vol
+
+#List  a volume
+
+docker volume ls
+
+#Inspect a volume:
+
+docker volume inspect my-vol
+
+#Remove a volume:
+
+docker volume rm my-vol
+
+#Start a container with a volume
+
+#If you start a container with a volume that doesn't yet exist, Docker creates the volume for you. The following example mounts the volume myvol2 into /app/ in the container.
+
+docker run -d \
+  --name devtest \
+  --mount source=myvol2,target=/app \
+  nginx:latest
+
+
+#Inspect it
+
+ docker inspect devtest
+
+#Mount read only
+
+docker run -d \
+  --name=nginxtest \
+  --mount source=nginx-vol,destination=/usr/share/nginx/html,readonly \
+  nginx:latest
+
+
+#Verify
+docker inspect nginxtest
+
+#The following example creates a logs volume and initiates the subdirectories app1 and app2 in the volume.
+
+docker volume create logs
+
+#To automatically remove volumes, use the --rm option.When you remove the container.
+
+docker run --rm \
+  --mount src=logs,dst=/logs \
+  alpine mkdir -p /logs/app1 /logs/app2
+
+
+#To remove all unused volumes and free up space:
+
+
+docker volume prune

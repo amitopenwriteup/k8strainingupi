@@ -1,0 +1,14 @@
+#Lab
+docker run -d \
+  -it \
+  --name tmptest \
+  --mount type=tmpfs,destination=/app \
+  nginx:latest
+
+#Inspect
+
+docker inspect tmptest --format '{{ json .Mounts }}'
+
+#stop and remove container
+ docker stop tmptest
+ docker rm tmptest

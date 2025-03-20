@@ -1,0 +1,36 @@
+# Use an official Python runtime as a parent image
+FROM python:3.9
+
+# Set build-time argument for the Git repository
+ARG REPO_URL=https://github.com/amitopenwriteup/cicdproject.git
+
+# Set environment variables
+ENV WORKDIR=/app
+
+# Set the working directory in the container
+WORKDIR $WORKDIR
+
+# Install git and other necessary packages
+RUN apt-get update && apt-get install -y git && rm -rf /var/lib/apt/lists/*
+
+# Clone the repository
+RUN git clone --depth=1 $REPO_URL /tmp/repo
+
+# Copy only the 'app' folder and 'requirements.txt' from the cloned repo
+RUN cp -r /tmp/repo/app $WORKDIR
+RUN cp /tmp/repo/requirements.txt $WORKDIR/requirements.txt
+
+# Remove the cloned repo to free space
+RUN rm -rf /tmp/repo
+
+# Install dependencies
+RUN pip install --no-cache-dir -r requirements.txt
+
+EXPOSE 5000
+
+# Set an environment variable for runtime
+ENV PYTHONUNBUFFERED=1
+
+# Command to run the application (Modify as needed)
+CMD ["python", "app/app.py"]
+

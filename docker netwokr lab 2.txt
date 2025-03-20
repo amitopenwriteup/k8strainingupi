@@ -1,0 +1,48 @@
+#Create the alpine-net network. You do not need the --driver bridge flag since it's the default, but this example shows how to specify it.
+
+docker network create --driver bridge alpine-net
+
+docker network ls
+
+#inspect
+
+docker network inspect alpine-net
+
+Create your four containers. Notice the --network flags. You can only connect to one network during the docker run command, so you need to use docker network connect afterward to connect alpine4 to the bridge network as well.
+
+docker run -dit --name alpine1 --network alpine-net alpine ash
+
+docker run -dit --name alpine2 --network alpine-net alpine ash
+
+docker run -dit --name alpine3 alpine ash
+
+docker run -dit --name alpine4 --network alpine-net alpine ash
+
+docker network connect bridge alpine4
+
+#check all container
+
+docker container ls
+
+docker network inspect bridge
+
+
+docker network inspect alpine-net
+
+
+#Ping test
+
+docker container attach alpine1
+ping -c 2 alpine2
+ping -c 2 alpine4
+
+#It should fail for alpine 3, why?
+ping -c 2 alpine3
+
+#Stop and delete
+
+docker container stop alpine1 alpine2 alpine3 alpine4
+
+docker container rm alpine1 alpine2 alpine3 alpine4
+
+docker network rm alpine-net

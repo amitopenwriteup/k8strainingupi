@@ -1,0 +1,70 @@
+#Bind from current location
+
+mkdir -p $(pwd)/target
+
+docker run -d \
+  -it \
+  --name devtest1 \
+  --mount type=bind,source="$(pwd)"/target,target=/app \
+  nginx:latest
+
+docker run -d \
+  -it \
+  --name devtest1 \
+  -v "$(pwd)"/target:/app \
+  nginx:latest
+
+#Inspect
+
+docker inspect devtest1
+
+#stop and remove container
+
+docker container stop devtest1
+
+docker container rm devtest1
+
+#Mount into a non-empty directory on the container
+
+docker run -d \
+  -it \
+  --name broken-container \
+  --mount type=bind,source=/tmp,target=/usr \
+  nginx:latest
+
+
+ docker ps
+docker exec -it devtest1 bash
+ls
+exit
+cd target
+ls
+touch b
+docker exec -it devtest1 bash
+
+#Check container starts or not
+
+ docker container rm broken-container
+
+#Read only bind
+mkdir -p $(pwd)/target
+
+docker run -d \
+  -it \
+  --name devtest2 \
+  --mount type=bind,source="$(pwd)"/target,target=/app,readonly \
+  nginx:latest
+
+#Inspect
+docker inspect devtest2
+docker stop devtest2
+docker rm devtest2
+
+
+#Try this and provide observation
+docker run -d \
+  -it \
+  --name devtest \
+  --mount type=bind,source="$(pwd)"/target,target=/app \
+  --mount type=bind,source="$(pwd)"/target,target=/app2,readonly,bind-propagation=rslave \
+  nginx:latest

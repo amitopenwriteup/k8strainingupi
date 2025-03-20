@@ -1,0 +1,14 @@
+#Run a Container with the none Network:
+
+docker run -dit --name isolated_container --network none alpine ash
+
+#Inspect the Network Interfaces Inside the Container:
+
+docker attach isolated_container
+
+ip addr show
+
+# stop and remove the container:
+
+docker container stop isolated_container
+docker container rm isolated_container

@@ -1,0 +1,35 @@
+# List the networking
+
+docker network ls
+
+# start alphine container
+
+docker run -dit --name alpine1 alpine ash
+
+docker run -dit --name alpine2 alpine ash
+
+docker container ls
+
+# Inspect the bridge
+
+ docker network inspect bridge
+
+docker inspect alpine1
+docker inspect apline2
+
+#check alpine1 ip
+docker attach alpine1
+ip addr show
+
+# Run ping operation
+
+ ping -c 2 google.com
+
+#Try to ping second container
+
+
+ ping -c 2 172.17.0.6
+
+#Delete and remove the container
+docker container stop alpine1 alpine2
+docker container rm alpine1 alpine2
