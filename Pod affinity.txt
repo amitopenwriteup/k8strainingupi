@@ -1,0 +1,40 @@
+#Create a pod with backend key
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: backend-pod
+  labels:
+    app: backend
+spec:
+  containers:
+    - name: backend-container
+      image: nginx
+
+#Check pod
+kubectl get po -o wide 
+
+#Now create pod with affinity rule
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: my-pod
+spec:
+  containers:
+    - name: my-container
+      image: amitow/nginx:v2
+  affinity:
+    podAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        - labelSelector:
+            matchExpressions:
+              - key: app
+                operator: In
+                values:
+                  - backend
+          topologyKey: kubernetes.io/hostname
+
+#Check where it is hosted
+
+kubectl  get po -o wide

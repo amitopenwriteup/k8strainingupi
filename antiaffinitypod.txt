@@ -1,0 +1,36 @@
+#Create yaml and apply
+apiVersion: v1
+kind: Pod
+metadata:
+  name: frontend-pod
+  labels:
+    app: frontend
+spec:
+  containers:
+    - name: frontend-container
+      image: nginx
+
+#Create another pod with anti affinity
+apiVersion: v1
+kind: Pod
+metadata:
+  name: my-pod
+spec:
+  containers:
+    - name: my-container
+      image: amitow/nginx:v2
+  affinity:
+    podAntiAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        - labelSelector:
+            matchExpressions:
+              - key: app
+                operator: In
+                values:
+                  - frontend
+          topologyKey: topology.kubernetes.io/zone  # Alternative to "kubernetes.io/hostname"
+
+#Check both pods are on same node
+
+kubectl get po -o wide
+

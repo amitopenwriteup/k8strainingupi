@@ -1,0 +1,26 @@
+#
+kubeclt get no --show-labels
+
+# create and apply yaml
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: with-node-affinity
+spec:
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: kubernetes.io/hostname
+            operator: In
+            values:
+            - kind-worker  # Now the pod will run only on kind-worker
+  containers:
+  - name: with-node-affinity
+    image: k8s.gcr.io/pause:2.0
+
+#check
+
+kubectl get po -o wide

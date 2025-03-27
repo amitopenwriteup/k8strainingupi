@@ -1,0 +1,28 @@
+#Details
+
+kubectl get no
+
+#Check control plane Taint
+
+kubectl describe no kind-control-plane |grep Taint
+
+
+#Create toleration pod, pod.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: toleration-pod
+spec:
+  containers:
+    - name: nginx
+      image: nginx:latest
+  tolerations:
+    - key: "node-role.kubernetes.io/control-plane"
+      operator: "Exists"
+      effect: "NoSchedule"
+
+#apply it
+
+kubectl apply -f pod.yaml
+
+

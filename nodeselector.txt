@@ -1,0 +1,26 @@
+#Assign the node
+ 
+kubectl label node kind-worker app=web
+
+#Check labels
+kubectl get nodes --show-labels 
+
+#Create pod spec selectpod.yaml
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: app-pod
+spec:
+  containers:
+    - name: nginx
+      image: nginx:latest
+  nodeSelector:
+    app: web
+
+#
+kubectl apply -f selectpod.yaml
+
+#check the nodes
+
+kubectl get po -o wide

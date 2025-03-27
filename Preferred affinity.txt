@@ -1,0 +1,31 @@
+#Create and apply yaml
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: with-preferred-affinity
+spec:
+  affinity:
+    nodeAffinity:
+      preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 1
+        preference:
+          matchExpressions:
+          - key: kubernetes.io/hostname
+            operator: In
+            values:
+            - kind-worker
+      - weight: 5
+        preference:
+          matchExpressions:
+          - key: kubernetes.io/hostname
+            operator: In
+            values:
+            - kind-worker2
+  containers:
+  - name: with-preferred-affinity
+    image: k8s.gcr.io/pause:2.0
+
+#Check yaml
+
+kubectl get po -o wide
