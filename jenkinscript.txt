@@ -1,0 +1,65 @@
+#!/bin/bash
+
+# Exit on error
+set -e
+
+# Update system packages
+echo "Updating system packages..."
+sudo apt-get update -y 
+
+# Install dependencies
+echo "Installing necessary dependencies..."
+sudo apt-get install -y wget unzip gnupg curl
+
+# Install OpenJDK 17
+echo "Installing OpenJDK 17..."
+sudo apt-get install -y openjdk-17-jdk
+
+# Verify Java installation
+java -version
+
+# Add Jenkins repository key
+echo "Adding Jenkins repository key..."
+sudo wget -O /usr/share/keyrings/jenkins-keyring.asc https://pkg.jenkins.io/debian-stable/jenkins.io-2023.key
+
+# Add Jenkins repository
+echo "Adding Jenkins repository..."
+echo "deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc] https://pkg.jenkins.io/debian-stable binary/" | sudo tee /etc/apt/sources.list.d/jenkins.list > /dev/null
+
+# Update package list and install Jenkins
+echo "Installing Jenkins..."
+sudo apt-get update
+sudo apt-get install -y jenkins
+
+# Start and enable Jenkins service
+echo "Starting and enabling Jenkins service..."
+sudo systemctl start jenkins
+sudo systemctl enable jenkins
+
+# Wait for Jenkins to start completely
+echo "Waiting for Jenkins to start..."
+sleep 30
+
+# Retrieve the initial administrator password
+echo "Fetching initial admin password..."
+export JENKINS_ADMIN_PASS=$(sudo cat /var/lib/jenkins/secrets/initialAdminPassword)
+echo "Jenkins Initial Admin Password: $JENKINS_ADMIN_PASS"
+
+# Add password to ~/.bashrc for future use
+echo "export JENKINS_ADMIN_PASS=$JENKINS_ADMIN_PASS" >> ~/.bashrc
+source ~/.bashrc
+
+# Download Jenkins CLI JAR
+JENKINS_URL="http://localhost:8080"
+CLI_JAR="jenkins-cli.jar"
+
+echo "Downloading Jenkins CLI JAR..."
+wget "$JENKINS_URL/jnlpJars/jenkins-cli.jar" -O "$CLI_JAR"
+
+# Provide command to use Jenkins CLI with authentication
+echo "To use Jenkins CLI, run the following command:"
+echo "java -jar $CLI_JAR -s $JENKINS_URL -auth admin:\$JENKINS_ADMIN_PASS help"
+
+echo "Jenkins installation is complete!"
+echo "Access Jenkins at: http://localhost:8080"
+echo "Use the password above to unlock Jenkins."
