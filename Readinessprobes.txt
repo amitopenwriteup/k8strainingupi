@@ -1,0 +1,26 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: readiness-failure
+spec:
+  containers:
+    - name: failing-app
+      image: busybox
+      args:
+        - /bin/sh
+        - -c
+        - |
+          echo 'Starting container...'; 
+          sleep 60;  
+          touch /tmp/ready; 
+          echo 'Application is now ready'; 
+          sleep 300;
+
+      readinessProbe:
+        exec:
+          command:
+            - ls
+            - /tmp/ready  
+        initialDelaySeconds: 5
+        periodSeconds: 5
+        failureThreshold: 3  

@@ -1,0 +1,44 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: startup-failure
+spec:
+  containers:
+    - name: failing-app
+      image: busybox
+      args:
+        - /bin/sh
+        - -c
+        - "echo 'Starting...'; sleep 300"  # No /tmp/healthy file is created
+      startupProbe:
+        exec:
+          command:
+            - ls
+            - /tmp/healthy  # This file does NOT exist, causing failure
+        failureThreshold: 5   # After 5 failures, restart the container
+        periodSeconds: 5      # Probe runs every 5 seconds
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: startup-fixed
+spec:
+  containers:
+    - name: working-app
+      image: busybox
+      args:
+        - /bin/sh
+        - -c
+        - |
+          touch /tmp/healthy;  
+          echo 'Startup complete'; 
+          sleep 300  # Simulate long-running process
+
+      startupProbe:
+        exec:
+          command:
+            - ls
+            - /tmp/healthy
+        failureThreshold: 5
+        periodSeconds: 5
