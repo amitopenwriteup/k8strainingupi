@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nginx-config
+  namespace: stage-nginx-namespace
+data:
+  ENVIRONMENT: stage

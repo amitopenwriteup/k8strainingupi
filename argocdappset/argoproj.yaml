@@ -1,0 +1,19 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: amit-microservice-app
+  namespace: argocd
+spec:
+  project: stage-devseccops
+  source:
+    repoURL: git@github.com:amitopenwriteup/nginx-argoproj.git
+    targetRevision: main
+    path: argocdappset/proj
+  destination:
+    name: arn:aws:eks:ap-south-1:130705418859:cluster/stage-devseccops-eks-cluster
+    namespace: microservices
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+

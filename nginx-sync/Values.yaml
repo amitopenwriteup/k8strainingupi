@@ -1,0 +1,4 @@
+namespace:
+  name: azhar-stage-nginx-namespace
+serviceAccount:
+  name: azhar-stage-nginx-sa

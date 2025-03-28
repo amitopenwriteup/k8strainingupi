@@ -1,0 +1,28 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: my-nginx-amit
+  namespace: argocd
+spec:
+  destination:
+    name: 'arn:aws:eks:ap-south-1:130705418859:cluster/stage-devseccops-eks-cluster'
+    namespace: stage-my-amit-helm
+    server: ''
+  sources:
+  - repoURL: 'https://charts.bitnami.com/bitnami'
+    chart: nginx
+    targetRevision: 18.1.2
+    helm:
+      valueFiles:
+      - values.yaml
+  - repoURL: 'git@github.com:amitopenwriteup/nginx-argoproj.git'
+    targetRevision: dev
+    ref: values
+  project: stage-devseccops
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+

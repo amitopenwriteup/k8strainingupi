@@ -1,0 +1,38 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: helm-applications
+  namespace: argocd
+spec:
+  generators:
+    - list:
+        elements:
+          - chart: nginx
+            releaseName: my-nginx
+            targetRevision: 18.1.2
+            valuesFilePath: git@github.com:amitopenwriteup/nginx-argoproj.git/nginx-helm/values.yaml
+          - chart: apache
+            releaseName: my-apache
+            targetRevision: 11.2.5
+            valuesFilePath: git@github.com:amitopenwriteup/apache-argoproj.git/apache-helm/values1.yaml
+  template:
+    metadata:
+      name: '{{releaseName}}'
+    spec:
+      project: stage-devseccops
+      source:
+        repoURL: https://charts.bitnami.com/bitnami
+        chart: '{{chart}}'
+        targetRevision: '{{targetRevision}}'
+        helm:
+          releaseName: '{{releaseName}}'
+          valuesFiles:
+            - '{{valuesFilePath}}'
+      destination:
+        name: arn:aws:eks:ap-south-1:130705418859:cluster/stage-devseccops-eks-cluster
+        namespace: default
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+

@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: microservice-deployment
+  namespace: amit-devmicroservices
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: microservice
+  template:
+    metadata:
+      labels:
+        app: microservice
+    spec:
+      serviceAccountName: amit-microservice-sa
+      containers:
+        - name: microservice
+          image: amitow/nginx:v1
+          ports:
+            - containerPort: 80
+

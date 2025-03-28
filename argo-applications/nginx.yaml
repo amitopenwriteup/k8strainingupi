@@ -1,0 +1,16 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: nginx-ronenb
+  namespace: argocd
+spec:
+  destination:
+    name: arn:aws:eks:ap-south-1:130705418859:cluster/stage-devseccops-eks-cluster
+    namespace: ''
+  project: stage-devseccops
+  source:
+    path: nginx
+    repoURL: git@github.com:amitopenwriteup/nginx-argoproj.git
+    targetRevision: ronenb
+  syncPolicy:
+    automated: {}
