@@ -58,8 +58,11 @@ wget "$JENKINS_URL/jnlpJars/jenkins-cli.jar" -O "$CLI_JAR"
 
 # Provide command to use Jenkins CLI with authentication
 echo "To use Jenkins CLI, run the following command:"
-echo "java -jar $CLI_JAR -s $JENKINS_URL -auth admin:\$JENKINS_ADMIN_PASS help"
+echo "java -jar $CLI_JAR -s $JENKINS_URL -auth admin:$JENKINS_ADMIN_PASS help"
 
 echo "Jenkins installation is complete!"
 echo "Access Jenkins at: http://localhost:8080"
 echo "Use the password above to unlock Jenkins."
+
+java -jar jenkins-cli.jar -s http://localhost:8080 -auth admin:$JENKINS_ADMIN_PASS install-plugins workflow-aggregator
+
