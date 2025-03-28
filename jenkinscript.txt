@@ -65,4 +65,13 @@ echo "Access Jenkins at: http://localhost:8080"
 echo "Use the password above to unlock Jenkins."
 
 java -jar jenkins-cli.jar -s http://localhost:8080 -auth admin:$JENKINS_ADMIN_PASS install-plugins workflow-aggregator
+java -jar jenkins-cli.jar -s http://localhost:8080 -auth admin:$JENKINS_ADMIN_PASS restart
+
+java -jar jenkins-cli.jar -s http://localhost:8080 -auth admin:$JENKINS_ADMIN_PASS create-job firstjob < job.xml
+
+java -jar jenkins-cli.jar -s http://localhost:8080 -auth admin:$JENKINS_ADMIN_PASS build firstjob
+
+java -jar jenkins-cli.jar -s http://localhost:8080 -auth admin:$JENKINS_ADMIN_PASS console firstjob
+
+
 
